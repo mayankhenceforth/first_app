@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import Nav from "@/component/Nav";
+import 'server-only'
+
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -28,9 +30,23 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        <Nav />
+        {/* <Nav /> */}
         {children}
       </body>
     </html>
   );
 }
+
+// export async function getServerSideProps() {
+//   const res = await fetch("https://raw.githubusercontent.com/dariusk/corpora/master/data/plants/flowers.json?limit=10");
+//   const data = await res.json();
+
+//   console.log("data json:",data)
+
+//   return {
+//     props: {
+//       posts: data,
+//     },
+//   };
+// }
+

@@ -1,22 +1,12 @@
-'use server'
+import { connectDB } from '@/lib/mongoose';
+import 'server-only'
 
 export default function Page() {
+  connectDB()
   return (
     <div className="flex items-center justify-center h-screen text-3xl font-bold">
-      Home Page 
+     <h1>Home Page</h1>
     </div>
   );
 }
 
-export async function getServerSideProps() {
-  const res = await fetch("https://raw.githubusercontent.com/dariusk/corpora/master/data/plants/flowers.json?limit=10");
-  const data = await res.json();
-
-  console.log("data json:",data)
-
-  return {
-    props: {
-      posts: data,
-    },
-  };
-}
