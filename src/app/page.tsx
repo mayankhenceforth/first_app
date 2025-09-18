@@ -1,12 +1,15 @@
-import { connectDB } from '@/lib/mongoose';
-import 'server-only'
+import Head from 'next/head';
 
-export default function Page() {
-  connectDB()
+export default function HomePage() {
   return (
-    <div className="flex items-center justify-center h-screen text-3xl font-bold">
-     <h1>Home Page</h1>
-    </div>
+    <>
+      <Head>
+        <title>Home Page</title>
+        <meta name="description" content="Welcome to our homepage" />
+      </Head>
+      <div className="flex items-center justify-center min-h-screen">
+        <h1 className="text-3xl font-bold text-center">Home Page</h1>
+      </div>
+    </>
   );
 }
-

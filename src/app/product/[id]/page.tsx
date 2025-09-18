@@ -1,51 +1,52 @@
-"use client";
-import axios from "axios";
-import { useParams } from "next/navigation";
-import { useEffect, useState } from "react";
+// app/product/[id]/page.tsx
 
-interface Product {
-  _id: string;
-  name: string;
-  currentPrice: number;
-  originalPrice: number;
-  image: string[];
-  description: string;
+import ProductDetailPage from "@/component/ProductDetailPage";
+import { getProductById, getProductByCategory, getAllProducts } from "@/actions/product";
+import BackButton from "@/component/BackButton";
+
+interface Props {
+  params: { id: string };
 }
 
-const ProductDetailPage = () => {
-  const { id } = useParams();
-  const [product, setProduct] = useState<Product | null>(null);
+// Pre-render pages at build time
+export async function generateStaticParams() {
+  const products = await getAllProducts(1, 100); // Fetch first 100 products
+  return products.data.map((product) => ({
+    id: product._id,
+  }));
+}
 
-  useEffect(() => {
-    if (!id) return;
-    console.log(id)
+export default async function ProductPage({ params }: Props) {
+  const product = await getProductById(params.id);
 
-    axios
-      .get(`https://server-two-brown.vercel.app/api/product/view/${id}`)
-      .then((res) => {
-        console.log("✅ API Request:", res.config.url);
-        setProduct(res.data.data);
-      })
-      .catch((err) => console.error("Error fetching product:", err));
-  }, [id]);
+  if (!product) {
+    return (
+      <div className="text-center py-20 text-red-500">
+        Product not found or failed to load.
+      </div>
+    );
+  }
 
-  if (!product) return <p>Loading...</p>;
+  // Suggested products
+  const suggestedProducts =
+    product.data.category?.length > 0
+      ? await getProductByCategory(product.data.category[0]._id)
+      : [];
+
+  // More products
+  const otherProductResponse = await getAllProducts();
+  const moreProducts = Array.isArray(otherProductResponse.data)
+    ? otherProductResponse.data
+    : [];
 
   return (
-    <div className="p-6">
-      <img
-        src={product.image[0]}
-        alt={product.name}
-        className="w-64 h-64 object-cover rounded-md mb-4"
+    <div >
+      <BackButton href="/product" label="Back to all product page" />
+      <ProductDetailPage
+        product={product.data}
+        suggestedProducts={Array.isArray(suggestedProducts) ? suggestedProducts : suggestedProducts?.data}
+        moreProducts={moreProducts}
       />
-      <h1 className="text-2xl font-bold">{product.name}</h1>
-      <p className="text-gray-600 mt-2">{product.description}</p>
-      <p className="mt-4 text-lg">
-        ₹{product.currentPrice}{" "}
-        <del className="text-red-400">₹{product.originalPrice}</del>
-      </p>
     </div>
   );
-};
-
-export default ProductDetailPage;
+}
