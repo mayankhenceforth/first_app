@@ -32,14 +32,14 @@ export default function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
         {/* <Nav /> */}
-       <ThemeProvider
+       {/* <ThemeProvider
             attribute="class"
             defaultTheme="light"
             enableSystem
             disableTransitionOnChange
-          >
+          > */}
             {children}
-          </ThemeProvider>
+          {/* </ThemeProvider> */}
       </body>
     </html>
   );
