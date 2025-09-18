@@ -141,7 +141,7 @@ export default function ProductDetailPage({
         </div>
 
         {/* Product Info Section */}
-        <div className="flex flex-col">
+        <div className="flex flex-col lg:h-[650px] overflow-y-scroll">
           <h1 className="text-3xl md:text-4xl font-bold text-gray-900 mb-2">{product.name}</h1>
           
           {/* Price Section */}

@@ -41,7 +41,6 @@ export default async function ProductPage({ params }: Props) {
 
   return (
     <div >
-      <BackButton href="/product" label="Back to all product page" />
       <ProductDetailPage
         product={product.data}
         suggestedProducts={Array.isArray(suggestedProducts) ? suggestedProducts : suggestedProducts?.data}
