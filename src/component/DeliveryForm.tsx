@@ -45,7 +45,7 @@ export default function DeliveryForm({ product }: DeliveryFormProps) {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           product,
-          delivery: form, // ✅ pass delivery details
+          delivery: form,
         }),
       });
 

@@ -52,12 +52,7 @@ export default function ProductDetailPage({
   };
 
   const handleAddToCart = () => {
-    setIsLoading(true);
-    // Simulate API call
-    setTimeout(() => {
-      setIsLoading(false);
-      // Add to cart logic here
-    }, 1000);
+   console.log("Product add the cart")
   };
 
   return (

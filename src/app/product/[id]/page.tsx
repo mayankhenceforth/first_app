@@ -3,6 +3,7 @@
 import ProductDetailPage from "@/component/ProductDetailPage";
 import { getProductById, getProductByCategory, getAllProducts } from "@/actions/product";
 import BackButton from "@/component/BackButton";
+import { Product } from "@/types/product";
 
 interface Props {
   params: { id: string };

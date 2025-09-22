@@ -1,12 +1,14 @@
 import { NextResponse } from "next/server";
 
-const demoOrders = [
+const image = 'https://res.cloudinary.com/dmedhsl41/image/upload/v1756895682/user_apis/download%20%281%29.png'
+
+export const demoOrders = [
   {
     _id: "ord_001",
     product: {
       name: "iPhone 15 Pro",
       price: 129999,
-      image: "https://dummyjson.com/image/iphone15.png",
+      image: image,
     },
     delivery: {
       name: "Mayank Maurya",
@@ -24,7 +26,7 @@ const demoOrders = [
     product: {
       name: "Samsung Galaxy S24",
       price: 99999,
-      image: "https://dummyjson.com/image/s24.png",
+      image: image,
     },
     delivery: {
       name: "Rahul Sharma",
@@ -42,7 +44,7 @@ const demoOrders = [
     product: {
       name: "MacBook Pro M3",
       price: 189999,
-      image: "https://dummyjson.com/image/macbook.png",
+      image: image,
     },
     delivery: {
       name: "Priya Singh",
@@ -60,7 +62,7 @@ const demoOrders = [
     product: {
       name: "Sony WH-1000XM5",
       price: 29999,
-      image: "https://dummyjson.com/image/headphones.png",
+      image: image,
     },
     delivery: {
       name: "Ankit Verma",
@@ -78,7 +80,7 @@ const demoOrders = [
     product: {
       name: "Apple Watch Ultra 2",
       price: 89999,
-      image: "https://dummyjson.com/image/watch.png",
+      image: image,
     },
     delivery: {
       name: "Sneha Patel",
@@ -95,4 +97,9 @@ const demoOrders = [
 
 export async function GET() {
   return NextResponse.json(demoOrders);
+}
+
+// Optional: Get order by ID
+export async function getOrderById(id: string) {
+  return demoOrders.find((order) => order._id === id) || null;
 }

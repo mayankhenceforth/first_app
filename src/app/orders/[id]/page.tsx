@@ -46,7 +46,7 @@ export default async function OrderPage({ params }: OrderPageProps) {
     return (
       <div className="max-w-5xl mx-auto p-6 space-y-6">
         {/* Back Button */}
-       <BackButton href="/orders" label="Back to Orders" />
+        <BackButton href="/orders" label="Back to Orders" />
 
         <h1 className="text-4xl font-bold text-gray-900">Order Details</h1>
 
@@ -110,3 +110,21 @@ export default async function OrderPage({ params }: OrderPageProps) {
     return notFound();
   }
 }
+
+// src/app/orders/[id]/page.tsx
+
+export async function generateStaticParams() {
+  try {
+    const res = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/orders`);
+    const orders: Order[] = await res.json();
+
+    // Return array of params matching [id] in route
+    return orders.map((order) => ({
+      id: order._id,
+    }));
+  } catch (error) {
+    console.error("Error fetching orders for static params:", error);
+    return [];
+  }
+}
+

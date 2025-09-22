@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
+import { getAllOrders } from "@/actions/order";
 
 interface Order {
   _id: string;
@@ -18,7 +19,7 @@ interface Order {
     state: string;
     pincode: string;
   };
-  status: string;
+  status: "Paid" | "Processing" | "Shipped" | "Delivered" | "Cancelled";
   createdAt: string;
 }
 
@@ -26,11 +27,18 @@ export default function OrdersPage() {
   const [orders, setOrders] = useState<Order[]>([]);
   const [loading, setLoading] = useState(true);
 
+  const statusColors: Record<Order["status"], string> = {
+    Paid: "text-green-600",
+    Processing: "text-blue-600",
+    Shipped: "text-indigo-600",
+    Delivered: "text-green-700",
+    Cancelled: "text-red-600",
+  };
+
   useEffect(() => {
     const fetchOrders = async () => {
       try {
-        const res = await fetch("/api/orders");
-        const data = await res.json();
+        const data = await getAllOrders();
         setOrders(data);
       } catch (err) {
         console.error("Orders fetch error:", err);
@@ -67,15 +75,17 @@ export default function OrdersPage() {
                 alt={order.product.name}
                 className="w-24 h-24 object-cover rounded-md border"
               />
-              <div className="flex-1">
-                <h2 className="text-xl font-semibold">{order.product.name}</h2>
-                <p className="text-gray-600">₹{order.product.price}</p>
-                <p className="text-sm text-gray-500">
-                  Ordered on {new Date(order.createdAt).toLocaleDateString()}
-                </p>
-                <p className="text-sm">
+              <div className="flex-1 flex flex-col justify-between">
+                <div>
+                  <h2 className="text-xl font-semibold">{order.product.name}</h2>
+                  <p className="text-gray-600">₹{order.product.price}</p>
+                  <p className="text-sm text-gray-500">
+                    Ordered on {new Date(order.createdAt).toLocaleDateString()}
+                  </p>
+                </div>
+                <p className="text-sm mt-2">
                   <span className="font-semibold">Status:</span>{" "}
-                  <span className="text-green-600">{order.status}</span>
+                  <span className={statusColors[order.status]}>{order.status}</span>
                 </p>
               </div>
             </div>
