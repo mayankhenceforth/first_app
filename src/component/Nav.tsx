@@ -1,9 +1,8 @@
-"use client";
-
+'use client'
 import React, { useState } from "react";
+import { useRouter } from "next/router";
 import Image from "next/image";
 import { FaUserCircle, FaWallet, FaSearch, FaMapMarkerAlt } from "react-icons/fa";
-import { useRouter } from "next/navigation";
 
 const Nav = () => {
   const router = useRouter();
@@ -27,6 +26,7 @@ const Nav = () => {
         <Image
           src="/image/download-removebg-preview.png"
           alt="Logo"
+          key="logo"
           width={80}
           height={80}
           className="w-20 h-20 object-contain"
@@ -37,8 +37,13 @@ const Nav = () => {
       {/* Search */}
       <div className="flex flex-1 items-center justify-center mx-6">
         <form onSubmit={handleSearch} className="relative w-full max-w-md">
+          <label htmlFor="search-input" className="sr-only">
+            Search
+          </label>
           <input
+            id="search-input"
             type="text"
+            name="search"
             aria-label="Search"
             placeholder="Search movies..."
             value={searchQuery}
@@ -73,4 +78,4 @@ const Nav = () => {
   );
 };
 
-export default Nav;
+export default React.memo(Nav);

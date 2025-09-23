@@ -3,6 +3,8 @@
 import { useState } from "react";
 import { loadStripe } from "@stripe/stripe-js";
 import { Button } from "@/components/ui/button";
+import Image from "next/image";
+import { Input } from "@/components/ui/input";
 
 const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY!);
 
@@ -68,10 +70,12 @@ export default function DeliveryForm({ product }: DeliveryFormProps) {
     <div className="max-w-2xl mx-auto p-6 bg-white shadow-md rounded-xl">
       {/* Product Summary */}
       <div className="flex items-center gap-4 mb-6">
-        <img
+        <Image
           src={product.image[0]}
           alt={product.name}
-          className="w-20 h-20 object-cover rounded-md border"
+          width={100}
+          height={100}
+          className="w-30 h-30 object-cover rounded-md border"
         />
         <div>
           <h2 className="text-xl font-semibold">{product.name}</h2>
@@ -81,53 +85,47 @@ export default function DeliveryForm({ product }: DeliveryFormProps) {
 
       {/* Delivery Form */}
       <form onSubmit={handleSubmit} className="space-y-4">
-        <input
+        <Input
           name="name"
           placeholder="Full Name"
           value={form.name}
           onChange={handleChange}
-          className="w-full border p-3 rounded-lg"
           required
         />
-        <input
+        <Input
           name="phone"
           type="tel"
           placeholder="Phone Number"
           value={form.phone}
           onChange={handleChange}
-          className="w-full border p-3 rounded-lg"
           required
         />
-        <input
+        <Input
           name="address"
           placeholder="Address"
           value={form.address}
           onChange={handleChange}
-          className="w-full border p-3 rounded-lg"
           required
         />
-        <input
+        <Input
           name="city"
           placeholder="City"
           value={form.city}
           onChange={handleChange}
-          className="w-full border p-3 rounded-lg"
           required
         />
-        <input
+        <Input
           name="state"
           placeholder="State"
           value={form.state}
           onChange={handleChange}
-          className="w-full border p-3 rounded-lg"
           required
         />
-        <input
+        <Input
           name="pincode"
           placeholder="Pincode"
           value={form.pincode}
           onChange={handleChange}
-          className="w-full border p-3 rounded-lg"
           required
         />
 

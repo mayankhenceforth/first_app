@@ -1,7 +1,7 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 interface ProductState {
-  allSubCategory: any[]; 
-  allCategory: any[]; 
+  allSubCategory: any[];
+  allCategory: any[];
   allProduct: any[];
 }
 

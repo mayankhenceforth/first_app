@@ -1,8 +1,12 @@
-"use client";
+'use client';
 
 import { useState, useEffect } from "react";
 import { getAllProducts } from "@/actions/product";
 import Link from "next/link";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import Image from "next/image";
 
 type Product = {
   _id: string;
@@ -22,12 +26,13 @@ const ProductsPage = () => {
   const [perPage, setPerPage] = useState(9);
   const [loading, setLoading] = useState(false);
 
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   const fetchProducts = async (page = 1, limit = perPage) => {
     setLoading(true);
     try {
       const { data, pagination } = await getAllProducts(page, limit, {
-        createdAt: true,
-        order: -1,
+        createdAt: "true",
+        order: "-1",
       });
       setProducts(data);
       setPagination(pagination);
@@ -43,25 +48,14 @@ const ProductsPage = () => {
 
   const handlePrev = () => {
     if (pagination.currentPage > 1) {
-      setPagination((prev) => ({
-        ...prev,
-        currentPage: prev.currentPage - 1,
-      }));
+      setPagination((prev) => ({ ...prev, currentPage: prev.currentPage - 1 }));
     }
   };
 
   const handleNext = () => {
     if (pagination.currentPage < pagination.totalPages) {
-      setPagination((prev) => ({
-        ...prev,
-        currentPage: prev.currentPage + 1,
-      }));
+      setPagination((prev) => ({ ...prev, currentPage: prev.currentPage + 1 }));
     }
-  };
-
-  const handlePerPageChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    setPerPage(Number(e.target.value));
-    setPagination((prev) => ({ ...prev, currentPage: 1 }));
   };
 
   return (
@@ -72,24 +66,21 @@ const ProductsPage = () => {
 
       {/* Page Size Selector */}
       <div className="mb-6 flex flex-col md:flex-row items-center justify-between gap-4">
-        <label className="flex items-center gap-2 text-gray-700">
-          Products per page:{" "}
-          <select
-            value={perPage}
-            onChange={handlePerPageChange}
-            className="border border-gray-300 rounded p-1 focus:ring-2 focus:ring-blue-400"
-          >
-            {[6, 9, 12, 15, 18].map((num) => (
-              <option key={num} value={num}>
-                {num}
-              </option>
-            ))}
-          </select>
-        </label>
-
+        <div className="flex items-center gap-2">
+          <span className="text-gray-700">Products per page:</span>
+          <Select value={perPage.toString()} onValueChange={(value) => { setPerPage(Number(value)); setPagination(prev => ({ ...prev, currentPage: 1 })); }}>
+            <SelectTrigger className="w-24 border">
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              {[6, 9, 12, 15, 18].map((num) => (
+                <SelectItem key={num} value={num.toString()}>{num}</SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
         <div className="text-gray-600 mt-2 md:mt-0">
-          Page {pagination.currentPage} of {pagination.totalPages} (
-          {pagination.totalProducts} products)
+          Page {pagination.currentPage} of {pagination.totalPages} ({pagination.totalProducts} products)
         </div>
       </div>
 
@@ -112,43 +103,36 @@ const ProductsPage = () => {
         <>
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-6">
             {products.map((product) => (
-              <Link
-                key={product._id}
-                href={`/product/${product._id}`}
-                className="block border rounded-lg p-4 shadow hover:shadow-lg transition hover:scale-105 bg-white"
-              >
-                <img
-                  src={product.image[0]}
-                  alt={product.name}
-                  className="w-full h-48 object-cover rounded-md mb-2"
-                />
-                <h2 className="text-lg font-semibold line-clamp-2 text-gray-800">
-                  {product.name}
-                </h2>
-                <p className="text-gray-700 mt-1">
-                  ₹{product.currentPrice}{" "}
-                  <del className="text-red-400">{product.originalPrice}</del>
-                </p>
+              <Link key={product._id} href={`/product/${product._id}`}>
+                <Card className="hover:shadow-lg transition hover:scale-105 cursor-pointer">
+                  <CardHeader className="p-0">
+                    <Image
+                      src={product.image[0]}
+                      alt={product.name}
+                      width={500}
+                      height={500}
+                      className="w-full h-48 object-cover rounded-t-md"
+                    />
+                  </CardHeader>
+                  <CardContent className="space-y-1">
+                    <CardTitle className="text-lg line-clamp-2">{product.name}</CardTitle>
+                    <p className="text-gray-700">
+                      ₹{product.currentPrice} <del className="text-red-400">{product.originalPrice}</del>
+                    </p>
+                  </CardContent>
+                </Card>
               </Link>
             ))}
           </div>
 
           {/* Pagination */}
           <div className="mt-8 flex justify-center items-center gap-4 flex-wrap">
-            <button
-              onClick={handlePrev}
-              disabled={pagination.currentPage === 1}
-              className="px-4 py-2 bg-gray-200 rounded disabled:opacity-50 hover:bg-gray-300 transition"
-            >
+            <Button onClick={handlePrev} disabled={pagination.currentPage === 1} variant="outline">
               Previous
-            </button>
-            <button
-              onClick={handleNext}
-              disabled={pagination.currentPage === pagination.totalPages}
-              className="px-4 py-2 bg-gray-200 rounded disabled:opacity-50 hover:bg-gray-300 transition"
-            >
+            </Button>
+            <Button onClick={handleNext} disabled={pagination.currentPage === pagination.totalPages} variant="outline">
               Next
-            </button>
+            </Button>
           </div>
         </>
       )}

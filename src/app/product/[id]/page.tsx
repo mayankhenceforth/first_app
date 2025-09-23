@@ -1,24 +1,26 @@
-// app/product/[id]/page.tsx
 
 import ProductDetailPage from "@/component/ProductDetailPage";
 import { getProductById, getProductByCategory, getAllProducts } from "@/actions/product";
-import BackButton from "@/component/BackButton";
 import { Product } from "@/types/product";
 
 interface Props {
   params: { id: string };
 }
 
-// Pre-render pages at build time
 export async function generateStaticParams() {
-  const products = await getAllProducts(1, 100); // Fetch first 100 products
-  return products.data.map((product) => ({
+  const response = await getAllProducts(1, 100); 
+  const products = Array.isArray(response.data) ? response.data : [];
+
+  return products.map((product) => ({
     id: product._id,
   }));
 }
 
 export default async function ProductPage({ params }: Props) {
-  const product = await getProductById(params.id);
+  const { id } = params;
+
+  const productResponse = await getProductById(id);
+  const product = productResponse?.data;
 
   if (!product) {
     return (
@@ -28,24 +30,26 @@ export default async function ProductPage({ params }: Props) {
     );
   }
 
-  // Suggested products
-  const suggestedProducts =
-    product.data.category?.length > 0
-      ? await getProductByCategory(product.data.category[0]._id)
+  let suggestedProducts: Product[] = [];
+  if (product.category?.length) {
+    const suggestedResponse = await getProductByCategory(product.category[0]._id);
+    suggestedProducts = Array.isArray(suggestedResponse?.data)
+      ? suggestedResponse.data
       : [];
+  }
 
-  // More products
-  const otherProductResponse = await getAllProducts();
-  const moreProducts = Array.isArray(otherProductResponse.data)
-    ? otherProductResponse.data
+
+  const otherResponse = await getAllProducts();
+  const moreProducts:Product[] = Array.isArray(otherResponse?.data)
+    ? otherResponse.data.filter((p) => p._id !== id)
     : [];
 
   return (
-    <div >
+    <div className="max-w-7xl mx-auto px-4 py-6">
       <ProductDetailPage
-        product={product.data}
-        suggestedProducts={Array.isArray(suggestedProducts) ? suggestedProducts : suggestedProducts?.data}
-        moreProducts={moreProducts}
+        product={product}
+        suggestedProducts={suggestedProducts}
+        moreProducts={moreProducts as Product[]}
       />
     </div>
   );
